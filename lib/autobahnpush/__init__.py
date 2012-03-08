@@ -23,4 +23,4 @@ except:
    ## i.e. no setuptools or no package installed ..
    version = "?.?.?"
 
-import client
+from client import Client

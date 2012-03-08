@@ -16,8 +16,15 @@
 ##
 ###############################################################################
 
-from autobahnpush import client
+import autobahnpush
+
 
 if __name__ == '__main__':
-   
-   client.test()
+
+   ## push 5 messages
+   ##
+   client = autobahnpush.Client("http://autobahn.tavendo.de:9090/hub")
+   for i in xrange(5):
+      client.push(topic = "http://autobahn.tavendo.de/public/demo/pubsub/050317",
+                  event = {'i': i, 'msg': "Hello from Python %d!!" % i})
+      print "message %d pushed!" % i
