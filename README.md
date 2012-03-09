@@ -25,7 +25,7 @@ tools `easy_install` or `pip`.
 
 For example:
 
-    easy_install install autobahnpush
+    easy_install autobahnpush
 
 
 
@@ -39,16 +39,25 @@ Pushing from Python is as simple as 2 lines:
 
     client = autobahnpush.Client("<Your Autobahn.ws Appliance Push URL>")
     client.push(topic = "<Your publication topic URI>",
-                event = {'field1': "Your published event.", ...})
+                event = "Your awesome message!")
 
 
 Basically, you create a client providing the Push endpoint URL served
 by your appliance instance.
 
 Then you reuse that client for pushing once or multiple times.
+
 Doing so, you provide the topic to publish under, and the event you
-want to publish. The event can be any Python object that can be
-serialized to JSON.
+want to publish.
+
+
+The event can be any Python object that can be serialized to JSON:
+
+    client.push(topic = "<Your publication topic URI>",
+                event = {'field1': "Your published event.",
+                         'field2': [1, 2, 3],
+                         'field3': {'subfield1': 23
+                                    'subfield2': "foobar"})
 
 
 Signed Pushes
