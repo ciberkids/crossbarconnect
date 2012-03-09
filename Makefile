@@ -11,9 +11,6 @@ clean:
 build:
 	python setup.py bdist_egg
 
-upload:
-	scp dist/*.egg oberstet@www.tavendo.de:/usr/local/www/pypi
-
 publish:
 	python setup.py register
 	python setup.py sdist upload
