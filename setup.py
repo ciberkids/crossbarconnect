@@ -16,29 +16,40 @@
 ##
 ###############################################################################
 
-from setuptools import setup, find_packages
+from setuptools import setup
 
-setup (
+LONGDESC = """
+The Autobahn.ws WebSocket Appliance has an embedded REST API which you can
+use to push out messages to WebSocket clients such as browsers connected
+to the appliance.
+
+This module provides a convenient client to perform the simple HTTP/POSTs
+which the REST API consumes.
+
+The module has no external dependencies and is very simple to use.
+"""
+
+setup(
    name = 'autobahnpush',
-   version = '0.1',
-   description = 'Autobahn.ws push API for Python.',
-   long_description = """Simple to use client for pushing messages to WebSocket clients.
-   No external dependencies. Uses the REST API of Autobahn.ws WebSockets Appliance.""",
+   version = '0.2',
+   description = 'Autobahn.ws Push for Python.',
+   long_description = LONGDESC,
+   license = 'Apache License 2.0',
    author = 'Tavendo GmbH',
    author_email = 'autobahnws@googlegroups.com',
    url = 'http://autobahn.ws',
    platforms = ('Any'),
-   packages = find_packages(),
-   zip_safe = False,
-
-   ## http://pypi.python.org/pypi?%3Aaction=list_classifiers
-   ##
+   install_requires = ['setuptools'],
+   packages = ['autobahnpush'],
+   package_data = {'': ['LICENSE']},
+   zip_safe = True,
    classifiers = ["License :: OSI Approved :: Apache Software License",
-                  "Development Status :: 5 - Production/Stable",
+                  "Development Status :: 4 - Beta",
                   "Environment :: Console",
                   "Intended Audience :: Developers",
                   "Operating System :: OS Independent",
                   "Programming Language :: Python",
-                  "Topic :: Internet",
-                  "Topic :: Software Development :: Libraries"]
+                  "Topic :: Internet :: WWW/HTTP",
+                  "Topic :: Software Development :: Libraries"],
+   keywords = 'autobahn autobahn.ws websocket realtime push rest'
 )

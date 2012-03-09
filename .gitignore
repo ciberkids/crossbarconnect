@@ -1,5 +1,5 @@
 *.pyc
 *.pyo
-/lib/build/*
-/lib/dist/*
-/lib/autobahnpush.egg-info*/
+build/*
+dist/*
+autobahnpush.egg-info*/
