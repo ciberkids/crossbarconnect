@@ -4,9 +4,9 @@ Autobahn.ws Push for Python.
 What is that?
 -------------
 
-The Autobahn.ws WebSocket Appliance has an embedded REST API which you can
-use to push out messages to WebSocket clients such as browsers connected
-to the appliance.
+The Autobahn.ws WebSocket Appliance <http://autobahn.ws> has an embedded
+REST API which you can use to push out messages to WebSocket clients
+such as browsers connected to the appliance.
 
 This module provides a convenient client to perform the simple HTTP/POSTs
 which the REST API consumes.
@@ -32,11 +32,23 @@ For example:
 Pushing
 -------
 
+Pushing from Python is as simple as 2 lines:
+
+
     import autobahnpush
 
     client = autobahnpush.Client("<Your Autobahn.ws Appliance Push URL>")
     client.push(topic = "<Your publication topic URI>",
                 event = {'field1': "Your published event.", ...})
+
+
+Basically, you create a client providing the Push endpoint URL served
+by your appliance instance.
+
+Then you reuse that client for pushing once or multiple times.
+Doing so, you provide the topic to publish under, and the event you
+want to publish. The event can be any Python object that can be
+serialized to JSON.
 
 
 Signed Pushes
