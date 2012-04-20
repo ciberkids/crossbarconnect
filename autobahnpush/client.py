@@ -63,9 +63,9 @@ class Client:
 
       self.pushConnection.request('POST', path, msg, self.pushEndpoint['headers'])
       response = self.pushConnection.getresponse()
+      data = response.read()
       if response.status != 202:
-         raise Exception("Push failed %d [%s]" % (response.status, response.reason))
-      response.read()
+         raise Exception("Push failed %d [%s] - %s" % (response.status, response.reason, data))
 
 
    def _utcnow(self):
