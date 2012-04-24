@@ -75,9 +75,9 @@ class Client:
 
    def _signature(self, topic, body):
       if self.appkey:
-         # HMAC[SHA1]_{appsecret}(topicuri | appkey | timestamp | body) => appsig
+         # HMAC[SHA256]_{appsecret}(topicuri | appkey | timestamp | body) => appsig
          timestamp = self._utcnow()
-         hm = hmac.new(self.appsecret, None, hashlib.sha1)
+         hm = hmac.new(self.appsecret, None, hashlib.sha256)
          hm.update(topic)
          hm.update(self.appkey)
          hm.update(timestamp)

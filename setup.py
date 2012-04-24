@@ -31,7 +31,7 @@ The module has no external dependencies and is very simple to use.
 
 setup(
    name = 'autobahnpush',
-   version = '0.2',
+   version = '0.3',
    description = 'Autobahn.ws Push for Python.',
    long_description = LONGDESC,
    license = 'Apache License 2.0',
@@ -42,7 +42,7 @@ setup(
    install_requires = ['setuptools'],
    packages = ['autobahnpush'],
    package_data = {'': ['LICENSE']},
-   zip_safe = True,
+   zip_safe = False,
    classifiers = ["License :: OSI Approved :: Apache Software License",
                   "Development Status :: 4 - Beta",
                   "Environment :: Console",
