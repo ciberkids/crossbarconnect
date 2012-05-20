@@ -16,11 +16,18 @@
 ##
 ###############################################################################
 
+import sys
 import autobahnpush
-
 from flask import Flask, request, render_template
 
 app = Flask(__name__)
+
+
+@app.route("/")
+def index():
+   """
+   """
+   return render_template('index.html')
 
 
 @app.route("/client")
@@ -29,7 +36,7 @@ def client():
    Render a real-time WebSocket client receiving data from Autobahn.ws
    message broker.
    """
-   return render_template('client.html', server = "ws://localhost")
+   return render_template('client.html', server = sys.argv[1])
 
 
 @app.route('/form1')
@@ -46,9 +53,7 @@ def submit1():
    Receive data from a submitted HTML form and forward data to
    WebSocket clients by using the Autobahn.ws Push API.
    """
-   client = autobahnpush.Client("http://127.0.0.1:8080",
-                                appkey = "foobar",
-                                appsecret = "secret")
+   client = autobahnpush.Client(sys.argv[2])
    try:
       client.push(topic = "http://example.com/topic1",
                   event = {'name': request.form['name'],
@@ -59,4 +64,8 @@ def submit1():
 
 
 if __name__ == "__main__":
+   if len(sys.argv) < 3:
+      print "Usage: python __init__.py <Autobahn.ws WebSocket Endpoint> <Autobahn.ws Push Endpoint>"
+      print "  i.e. python __init__.py ws://192.168.1.135:80            http://192.168.1.135:8080"
+      sys.exit(1)
    app.run(debug = True)
