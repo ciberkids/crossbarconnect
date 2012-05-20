@@ -16,15 +16,21 @@
 ##
 ###############################################################################
 
+import sys
 import autobahnpush
 
 
 if __name__ == '__main__':
 
+   if len(sys.argv) < 2:
+      print "Usage: python __init__.py <Autobahn.ws Push Endpoint>"
+      print "  i.e. python __init__.py http://192.168.1.135:8080"
+      sys.exit(1)
+
    ## push 5 messages
    ##
-   client = autobahnpush.Client("http://autobahn.tavendo.de:9090/hub")
+   client = autobahnpush.Client(sys.argv[1])
    for i in xrange(5):
-      client.push(topic = "http://autobahn.tavendo.de/public/demo/pubsub/050317",
+      client.push(topic = "http://example.com/topic1",
                   event = {'i': i, 'msg': "Hello from Python %d!!" % i})
       print "message %d pushed!" % i

@@ -64,8 +64,10 @@ def submit1():
 
 
 if __name__ == "__main__":
+
    if len(sys.argv) < 3:
       print "Usage: python __init__.py <Autobahn.ws WebSocket Endpoint> <Autobahn.ws Push Endpoint>"
       print "  i.e. python __init__.py ws://192.168.1.135:80            http://192.168.1.135:8080"
       sys.exit(1)
+
    app.run(debug = True)
