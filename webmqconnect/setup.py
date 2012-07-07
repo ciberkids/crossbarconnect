@@ -37,11 +37,12 @@ For more information, please visit
 
 setup(
    name = 'webmqconnect',
-   version = '0.4.0',
+   version = '0.4.1',
    description = 'Tavendo WebMQ Connect for Python',
    long_description = LONGDESC,
    license = 'Apache License 2.0',
    author = 'Tavendo GmbH',
+   author_email = 'webmq@googlegroups.com',
    url = 'http://www.tavendo.de/webmq',
    platforms = ('Any'),
    install_requires = ['setuptools'],
