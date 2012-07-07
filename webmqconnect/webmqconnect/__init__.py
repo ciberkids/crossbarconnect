@@ -18,7 +18,7 @@
 
 try:
    import pkg_resources
-   version = pkg_resources.require("AutobahnPush")[0].version
+   version = pkg_resources.require("webmqconnect")[0].version
 except:
    ## i.e. no setuptools or no package installed ..
    version = "?.?.?"

@@ -4,7 +4,7 @@ install:
 	python setup.py install
 
 clean:
-	rm -rf ./autobahnpush.egg-info
+	rm -rf ./webmqconnect.egg-info
 	rm -rf ./build
 	rm -rf ./dist
 

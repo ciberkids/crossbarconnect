@@ -21,7 +21,7 @@ import json, httplib, urlparse, urllib, datetime, hmac, hashlib, base64
 
 class Client:
    """
-   Autobahn.ws WebSocket Appliance Push client.
+   Tavendo WebMQ Push client.
    """
 
    def __init__(self, pushto, appkey = None, appsecret = None, timeout = 5):
@@ -35,7 +35,7 @@ class Client:
       self.appsecret = appsecret
       self.pushEndpoint = self._parsePushUrl(pushto)
       self.pushEndpoint['headers'] = {"Content-type": "application/x-www-form-urlencoded",
-                                      "User-agent": "AutobahnPushPython"}
+                                      "User-agent": "WebMQConnectPython"}
 
       if self.pushEndpoint['secure']:
          raise Exception("https Push URL not implemented")
@@ -46,7 +46,7 @@ class Client:
 
    def push(self, topic, event, eligible = None, exclude = None):
       """
-      Push message view Autobahn.ws WebSocket Appliance.
+      Push message to clients via Tavendo WebMQ.
       """
       try:
          msg = json.dumps(event)

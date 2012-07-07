@@ -17,20 +17,16 @@
 ###############################################################################
 
 import sys
-import autobahnpush
-
+import webmqconnect
 
 if __name__ == '__main__':
 
-   if len(sys.argv) < 2:
-      print "Usage: python __init__.py <Autobahn.ws Push Endpoint>"
-      print "  i.e. python __init__.py http://192.168.1.135:8080"
+   if len(sys.argv) < 4:
+      print """
+Usage:   python push.py <Tavendo WebMQ Push URL> <Topic URI> <Message>
+Example: python push.py http://autobahn-euwest.tavendo.de:8080 http://autobahn.tavendo.de/public/demo/pubsub/577274 "Hello from Python"
+"""
       sys.exit(1)
 
-   ## push 5 messages
-   ##
-   client = autobahnpush.Client(sys.argv[1])
-   for i in xrange(5):
-      client.push(topic = "http://example.com/topic1",
-                  event = {'i': i, 'msg': "Hello from Python %d!!" % i})
-      print "message %d pushed!" % i
+   client = webmqconnect.Client(sys.argv[1])
+   client.push(topic = sys.argv[2], event = sys.argv[3])

@@ -19,28 +19,26 @@
 from setuptools import setup
 
 LONGDESC = """
-The Autobahn.ws WebSocket Appliance has an embedded REST API which you can
-use to push out messages to WebSocket clients such as browsers connected
-to the appliance.
+Tavendo WebMQ Web Message Broker extends existing Web applications to the
+Real-time Web.
 
-This module provides a convenient client to perform the simple HTTP/POSTs
-which the REST API consumes.
+This module provides the connector to integrate Python-based Web applications
+written for popular frameworks like Django, Flask and others with Tavendo WebMQ.
 
-The module has no external dependencies and is very simple to use.
+For more information, please visit http://www.tavendo.de/webmq
 """
 
 setup(
-   name = 'autobahnpush',
-   version = '0.3',
-   description = 'Autobahn.ws Push for Python.',
+   name = 'webmqconnect',
+   version = '0.4',
+   description = 'Tavendo WebMQ Connect for Python',
    long_description = LONGDESC,
    license = 'Apache License 2.0',
    author = 'Tavendo GmbH',
-   author_email = 'autobahnws@googlegroups.com',
-   url = 'http://autobahn.ws',
+   url = 'http://www.tavendo.de/webmq',
    platforms = ('Any'),
    install_requires = ['setuptools'],
-   packages = ['autobahnpush'],
+   packages = ['webmqconnect'],
    package_data = {'': ['LICENSE']},
    zip_safe = False,
    classifiers = ["License :: OSI Approved :: Apache Software License",
@@ -51,5 +49,5 @@ setup(
                   "Programming Language :: Python",
                   "Topic :: Internet :: WWW/HTTP",
                   "Topic :: Software Development :: Libraries"],
-   keywords = 'autobahn autobahn.ws websocket realtime push rest'
+   keywords = 'webmq websocket realtime push rest'
 )

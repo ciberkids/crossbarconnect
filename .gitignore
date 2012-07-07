@@ -1,5 +1,5 @@
 *.pyc
 *.pyo
-build/*
-dist/*
-autobahnpush.egg-info*/
+webmqconnect/build/*
+webmqconnect/dist/*
+webmqconnect/webmqconnect.egg-info*/
