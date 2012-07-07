@@ -111,7 +111,7 @@ class Client:
          hm.update(body)
          sig = base64.urlsafe_b64encode(hm.digest())
          return {'timestamp': timestamp,
-                 'authKey': self.authKey,
+                 'appkey': self.authKey,
                  'signature': sig}
       else:
          return {}
