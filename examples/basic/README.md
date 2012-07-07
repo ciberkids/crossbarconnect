@@ -6,9 +6,13 @@ Python command line scripts.
 
 To run, open a command shell and
 
-	python push.py <Tavendo WebMQ Push URL> <Topic URI> <Message>
+	python push.py <WebMQ Push Endpoint> <Topic URI> <Message>
 
-where **Tavendo WebMQ Push URL** is the Push URL of your WebMQ appliance, **Topic URI** is the topic you want to push to and **Message** is the message text you want to push.
+where
+
+	<WebMQ Push Endpoint> : Push Service Endpoint of your WebMQ appliance
+	<Topic URI>           : Topic URI you want to push to
+    <Message>             : Message you want to push    
 
 For example:
 

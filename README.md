@@ -1,18 +1,12 @@
-Autobahn.ws Push for Python.
-============================
+WebMQ Connect for Python
+========================
 
-What is that?
--------------
+[Tavendo WebMQ Web Message Broker](http://www.tavendo.de/webmq) extends existing Web applications to the Real-time Web.
 
-The Autobahn.ws WebSocket Appliance <http://autobahn.ws> has an embedded
-REST API which you can use to push out messages to WebSocket clients
-such as browsers connected to the appliance.
+This module provides the connector to integrate Python-based Web applications
+written for popular frameworks like Django, Flask and others with Tavendo WebMQ.
 
-This module provides a convenient client to perform the simple HTTP/POSTs
-which the REST API consumes.
-
-The module has no external dependencies and is very simple to use.
-
+Using this connector, you can push events from your Web app (or a plain Python script) to *Tavendo WebMQ* which will then forward the event to all real-time clients connected and subscribed to the topic you push to.
 
 
 Installation
@@ -25,7 +19,7 @@ tools `easy_install` or `pip`.
 
 For example:
 
-    easy_install autobahnpush
+    easy_install webmqconnect
 
 
 
@@ -35,21 +29,14 @@ Pushing
 Pushing from Python is as simple as 2 lines:
 
 
-    import autobahnpush
+    import webmqconnect
 
-    client = autobahnpush.Client("<Your Autobahn.ws Appliance Push URL>")
+    client = webmqconnect.Client("<Your WebMQ appliance Push endpoint>")
     client.push(topic = "<Your publication topic URI>",
                 event = "Your awesome message!")
 
 
-Basically, you create a client providing the Push endpoint URL served
-by your appliance instance.
-
-Then you reuse that client for pushing once or multiple times.
-
-Doing so, you provide the topic to publish under, and the event you
-want to publish.
-
+You create a client providing the Push endpoint of your WebMQ appliance. You can then use that client for pushing once or multiple times. Doing so, you provide the topic to publish under, and the event you want to publish.
 
 The event can be any Python object that can be serialized to JSON:
 
@@ -63,16 +50,17 @@ The event can be any Python object that can be serialized to JSON:
 Signed Pushes
 -------------
 
-For production setups you may have your Autobahn.ws appliance configured
-so that it only accepts _signed_ pushes.
+For production deployment, you might have configured your WebMQ appliance to only accept **signed pushes**.
 
-    client = autobahnpush.Client("<Your Autobahn.ws Appliance Push URL>",
-                                 appkey = "<Your App Key>",
-                                 appsecret = "<Your App Secret>")
+To issue signed pushes, you need to provide an *authentication key* and a corresponding *authentication secret* when creating the push client:
+
+    client = webmqconnect.Client("<Your WebMQ appliance Push endpoint>",
+                                 authKey = "<Your Application Key>",
+                                 authSecret = "<Your Application Secret>")
 
 
-Advanced Options
-----------------
+Pushes with Exclude and Eligible
+--------------------------------
 
 You can exclude specific WebSocket clients from receiving your pushed
 message, even though they may be subscribed to the topic you are
@@ -84,12 +72,4 @@ You can also specify a whitelist of WebSocket clients
 
     client.push(..., eligible = [<list of session IDs>])
 
-
-
-Copyright
----------
-
-Autobahn.ws - The WebSockets Appliance.
-Copyright (c) 2012 Tavendo GmbH.
-Licensed under the Apache 2.0 License.
-See license text under LICENSE.
+The session IDs are assigned to WAMP sessions by WebMQ and can be retrieved in WAMP clients.

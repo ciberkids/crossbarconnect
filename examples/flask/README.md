@@ -10,13 +10,13 @@ Running
 Start the web application by
 
 	cd examples/flask
-	python __init__.py <WebSocket Endpoint> <Push Endpoint> <Topic URI>
+	python __init__.py <WebMQ WebSocket Endpoint> <WebMQ Push Endpoint> <Topic URI>
 
 where
 
-	<WebSocket Endpoint> : WebSocket Service Endpoint of your WebMQ appliance
-	<Push Endpoint>      : Push Service Endpoint of your WebMQ appliance
-	<Topic URI>          : Topic URI you want to use
+	<WebMQ WebSocket Endpoint> : WebSocket Service Endpoint of your WebMQ appliance
+	<WebMQ Push Endpoint>      : Push Service Endpoint of your WebMQ appliance
+	<Topic URI>                : Topic URI you want to use
 
 
 For example
