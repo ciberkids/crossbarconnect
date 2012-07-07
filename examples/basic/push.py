@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
    if len(sys.argv) < 4:
       print """
-Usage:   python push.py <Tavendo WebMQ Push URL> <Topic URI> <Message>
+Usage:   python push.py <WebMQ Push Endpoint> <Topic URI> <Message>
 Example: python push.py http://autobahn-euwest.tavendo.de:8080 http://autobahn.tavendo.de/public/demo/pubsub/577274 "Hello from Python"
 """
       sys.exit(1)

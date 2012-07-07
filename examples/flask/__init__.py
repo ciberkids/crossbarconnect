@@ -17,7 +17,7 @@
 ###############################################################################
 
 import sys
-import autobahnpush
+import webmqconnect
 from flask import Flask, request, render_template
 
 app = Flask(__name__)
@@ -26,6 +26,7 @@ app = Flask(__name__)
 @app.route("/")
 def index():
    """
+   Render the demo main page.
    """
    return render_template('index.html')
 
@@ -33,10 +34,9 @@ def index():
 @app.route("/client")
 def client():
    """
-   Render a real-time WebSocket client receiving data from Autobahn.ws
-   message broker.
+   Render a Real-time client connecting to Tavendo WebMQ via WebSocket/WAMP.
    """
-   return render_template('client.html', server = sys.argv[1])
+   return render_template('client.html', server = sys.argv[1], topic = sys.argv[3])
 
 
 @app.route('/form1')
@@ -50,12 +50,11 @@ def form1():
 @app.route('/submit1', methods = ['POST'])
 def submit1():
    """
-   Receive data from a submitted HTML form and forward data to
-   WebSocket clients by using the Autobahn.ws Push API.
+   Receive data from a submitted HTML form and push data to Tavendo WebMQ.
    """
-   client = autobahnpush.Client(sys.argv[2])
+   client = webmqconnect.Client(sys.argv[2])
    try:
-      client.push(topic = "http://example.com/topic1",
+      client.push(topic = sys.argv[3],
                   event = {'name': request.form['name'],
                            'age': request.form['age']})
       return "Push succeeded"
@@ -65,9 +64,11 @@ def submit1():
 
 if __name__ == "__main__":
 
-   if len(sys.argv) < 3:
-      print "Usage: python __init__.py <Autobahn.ws WebSocket Endpoint> <Autobahn.ws Push Endpoint>"
-      print "  i.e. python __init__.py ws://192.168.1.135:80            http://192.168.1.135:8080"
+   if len(sys.argv) < 4:
+      print """
+Usage:   python __init__.py <WebMQ WebSocket Endpoint> <WebMQ Push Endpoint> <Topic URI>
+Example: python __init__.py wss://autobahn-euwest.tavendo.de http://autobahn-euwest.tavendo.de:8080 http://autobahn.tavendo.de/public/demo/foobar1
+"""
       sys.exit(1)
 
    app.run(debug = True)

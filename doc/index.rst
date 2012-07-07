@@ -1,10 +1,5 @@
-.. WebMQConnectPython documentation master file, created by
-   sphinx-quickstart on Sat Jul 07 19:58:42 2012.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to WebMQConnectPython's documentation!
-==============================================
+WebMQ Connect for Python Reference
+==================================
 
 Contents:
 

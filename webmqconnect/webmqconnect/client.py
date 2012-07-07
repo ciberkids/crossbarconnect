@@ -24,21 +24,36 @@ class Client:
    Tavendo WebMQ Push client.
    """
 
-   def __init__(self, pushto, appkey = None, appsecret = None, timeout = 5):
+   def __init__(self, pushEndpoint, authKey = None, authSecret = None, timeout = 5):
       """
-      Create Push API client.
+      Create WebMQ Push client.
+
+      The only mandatory argument is the Push service endpoint of the WebMQ
+      appliance to push to.
+
+      For signed pushes, provide authentication key and secret. If those are not
+      given, unsigned pushes are performed.
+
+      :param pushEndpoint: Push service endpoint of WebMQ appliance.
+      :type pushEndpoint: str
+      :param authKey: Optional authentication key to use.
+      :type authKey: str
+      :param authSecret: When using an authentication key, the corresponding authencation secret.
+      :type authSecret: str
+      :param timeout: Timeout for pushes to WebMQ.
+      :type timeout: int
       """
-      if appkey or appsecret:
-         if not (appkey and appsecret):
-            raise Exception("either appkey and appsecret must both be given, or none at all")
-      self.appkey = appkey
-      self.appsecret = appsecret
-      self.pushEndpoint = self._parsePushUrl(pushto)
+      if authKey or authSecret:
+         if not (authKey and authSecret):
+            raise Exception("either authKey and authSecret must both be given, or none at all")
+      self.authKey = authKey
+      self.authSecret = authSecret
+      self.pushEndpoint = self._parsePushUrl(pushEndpoint)
       self.pushEndpoint['headers'] = {"Content-type": "application/x-www-form-urlencoded",
                                       "User-agent": "WebMQConnectPython"}
 
       if self.pushEndpoint['secure']:
-         raise Exception("https Push URL not implemented")
+         raise Exception("Push via HTTPS not implemented")
       self.pushConnection = httplib.HTTPConnection(self.pushEndpoint['host'],
                                                    self.pushEndpoint['port'],
                                                    timeout = timeout)
@@ -46,7 +61,19 @@ class Client:
 
    def push(self, topic, event, eligible = None, exclude = None):
       """
-      Push message to clients via Tavendo WebMQ.
+      Push event to subscribers on specified topic via Tavendo WebMQ.
+
+      The event can be of any simple type or complex object that can
+      be serialized to JSON.
+
+      :param topic: Topic to push to. Must be a valid URI from the HTTP scheme.
+      :type topic: str
+      :param event: Event to push. Must be JSON-serializable.
+      :type event: obj
+      :param eligible: Optional list of WAMP session IDs eligible to receive this event.
+      :type eligible: list of strings
+      :param exclude: Optional list of WAMP session IDs to exclude from receivers.
+      :type exclude: list of strings
       """
       try:
          msg = json.dumps(event)
@@ -74,17 +101,17 @@ class Client:
 
 
    def _signature(self, topic, body):
-      if self.appkey:
-         # HMAC[SHA256]_{appsecret}(topicuri | appkey | timestamp | body) => appsig
+      if self.authKey:
+         # HMAC[SHA256]_{authSecret}(topicuri | authKey | timestamp | body) => appsig
          timestamp = self._utcnow()
-         hm = hmac.new(self.appsecret, None, hashlib.sha256)
+         hm = hmac.new(self.authSecret, None, hashlib.sha256)
          hm.update(topic)
-         hm.update(self.appkey)
+         hm.update(self.authKey)
          hm.update(timestamp)
          hm.update(body)
          sig = base64.urlsafe_b64encode(hm.digest())
          return {'timestamp': timestamp,
-                 'appkey': self.appkey,
+                 'authKey': self.authKey,
                  'signature': sig}
       else:
          return {}

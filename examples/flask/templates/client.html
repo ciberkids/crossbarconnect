@@ -2,11 +2,17 @@
 <html>
    <head>
       <!-- AutobahnJS client library -->
-      <script src="http://autobahn.ws/public/autobahn.min.js"></script>
+      <script src="http://autobahn.s3.amazonaws.com/js/autobahn.min.js"></script>
 
       <script>
 
-         // will hold our Autobahn client session
+         // Tavendo WebMQ WebSocket/WAMP URL - this gets filled from Flask
+         var wsuri = "{{ server }}";
+
+         // The topic we use - this gets filled from Flask
+         var topic = "{{ topic }}"
+
+         // will hold our WAMP client session
          var session = null;
 
          window.onload = function() {
@@ -16,10 +22,7 @@
 
          function connect() {
 
-            // Autobahn.ws Server URI: this is filled by Flask from command line
-            var wsuri = "{{ server }}";
-
-            // connect to Autobahn.ws
+            // connect to WebMQ
             ab.connect(wsuri,
 
                // called when connection has been established
@@ -46,7 +49,7 @@
          // we are now authenticated
          function onAuth(permissions) {
             log("authenticated", permissions);
-            session.subscribe("http://example.com/topic1", onMyEvent);
+            session.subscribe(topic, onMyEvent);
          };
 
          // we received an event
@@ -67,7 +70,7 @@
       </script>
    </head>
    <body>
-      <h1>Autobahn.ws Test Client</h1>
+      <h1>Push to browsers via Tavendo WebMQ from Python/Flask</h1>
       <pre id="evts" style="background-color: #333; color: #fff; width: 100%; font-size: 11px; padding: 12px; min-height: 300px;"></pre>
    </body>
 </html>
