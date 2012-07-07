@@ -25,12 +25,19 @@ Real-time Web.
 This module provides the connector to integrate Python-based Web applications
 written for popular frameworks like Django, Flask and others with Tavendo WebMQ.
 
-For more information, please visit http://www.tavendo.de/webmq
+Using this connector, you can push events from your Web app (or a plain Python
+script) to Tavendo WebMQ which will then forward the event to all real-time
+clients connected and subscribed to the topic you push to.
+
+For more information, please visit
+
+   * http://www.tavendo.de/webmq
+   * https://github.com/tavendo/WebMQConnectPython
 """
 
 setup(
    name = 'webmqconnect',
-   version = '0.4',
+   version = '0.4.0',
    description = 'Tavendo WebMQ Connect for Python',
    long_description = LONGDESC,
    license = 'Apache License 2.0',
