@@ -16,10 +16,16 @@
 ##
 ###############################################################################
 
-import sys, shelve, json, random
+import sys, shelve, json, random, uuid
 
-from flask import Flask, url_for, Response, request
+from flask import Flask, url_for, Response, request, session, render_template
+
 app = Flask(__name__)
+app.secret_key = str(uuid.uuid4())
+
+# http://flask.pocoo.org/docs/config/
+app.config['SESSION_COOKIE_NAME'] = 'FLASKSESSID'
+app.config['SESSION_COOKIE_HTTPONLY'] = False
 
 db = shelve.open("articles.dat")
 
@@ -34,7 +40,8 @@ def returnJson(obj, code = 200):
 
 @app.route('/')
 def root():
-   return 'Welcome to the Articles REST service.'
+   session['foo'] = 'bar'
+   return render_template('home.html')
 
 
 @app.route('/articles', methods = ['PUT'])
