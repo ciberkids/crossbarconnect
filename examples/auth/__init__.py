@@ -48,7 +48,7 @@ def authSignature(authChallenge, authSecret = None):
 @app.route('/')
 def index():
    if 'username' in session:
-      return render_template('client.html',
+      return render_template('index.html',
                              server = sys.argv[1],
                              topic = "http://example.com/simple")
    else:
@@ -64,7 +64,7 @@ def login():
          USERDB[username] != request.form['password'] != 'secret':
          error = 'Invalid credentials'
       else:
-         flash('You were successfully logged in')
+         flash("You were successfully logged in as '%s'" % username)
          session['username'] = username
          return redirect(url_for('index'))
    return render_template('login.html', error = error)
@@ -92,4 +92,4 @@ def authsign():
 
 
 if __name__ == "__main__":
-   app.run(host = "0.0.0.0", port = 8005, debug = True)
+   app.run(host = "0.0.0.0", port = 8000, debug = True)
