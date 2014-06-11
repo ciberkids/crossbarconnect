@@ -16,4 +16,6 @@ Start the Flask application:
 python __init__.py
 ```
 
-Open [http://localhost:5000] in two browser tabs, submit form data in the first tab and watch submitted information immediately appear in the second tab.
+Open [http://localhost:5000](http://localhost:5000) in two browser tabs, submit form data in the first tab and watch submitted information immediately appear in the second tab.
+
+For more information, please see [here](https://github.com/crossbario/crossbar/wiki/HTTP-Pusher-Service).
