@@ -1,5 +1,5 @@
 *.pyc
 *.pyo
-webmqconnect/build/*
-webmqconnect/dist/*
-webmqconnect/webmqconnect.egg-info*/
+build
+dist
+crossbarconnect.egg-info*/

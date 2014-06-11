@@ -120,7 +120,7 @@ class Client:
 
       self._endpoint = _parse_url(url)
       self._endpoint['headers'] = {
-         "Content-type": "application/x-www-form-urlencoded",
+         "Content-type": "application/json",
          "User-agent": "crossbarconnect-python"
       }
 
