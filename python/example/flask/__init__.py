@@ -1,6 +1,6 @@
 ###############################################################################
 ##
-##  Copyright 2012 Tavendo GmbH
+##  Copyright (C) 2012-2014 Tavendo GmbH
 ##
 ##  Licensed under the Apache License, Version 2.0 (the "License");
 ##  you may not use this file except in compliance with the License.
@@ -17,8 +17,13 @@
 ###############################################################################
 
 import sys
-import webmqconnect
+import crossbarconnect
 from flask import Flask, request, render_template
+
+PUSH_URL = "http://127.0.0.1:8080/push"
+TOPIC_URI = "com.myapp.topic1"
+WAMP_URL = "ws://127.0.0.1:8080/ws"
+WAMP_REALM = "realm1"
 
 app = Flask(__name__)
 
@@ -26,49 +31,28 @@ app = Flask(__name__)
 @app.route("/")
 def index():
    """
-   Render the demo main page.
+   Render demo main page.
    """
-   return render_template('index.html')
+   return render_template('index.html',
+      name = "Heinzelmann", age = 23,
+      router = WAMP_URL, realm = WAMP_REALM, topic = TOPIC_URI)
 
 
-@app.route("/client")
-def client():
+@app.route('/form1', methods = ['POST'])
+def form1_submit():
    """
-   Render a Real-time client connecting to Tavendo WebMQ via WebSocket/WAMP.
+   Extract data from a submitted HTML form, publish event via
+   Crossbar.io HTTP Pusher service and render success page.
    """
-   return render_template('client.html', server = sys.argv[1], topic = sys.argv[3])
-
-
-@app.route('/form1')
-def form1():
-   """
-   Render a HTML form.
-   """
-   return render_template('form1.html', name = "Heinzelmann", age = 23)
-
-
-@app.route('/submit1', methods = ['POST'])
-def submit1():
-   """
-   Receive data from a submitted HTML form and push data to Tavendo WebMQ.
-   """
-   client = webmqconnect.Client(sys.argv[2])
+   client = crossbarconnect.Client(PUSH_URL)
    try:
-      client.push(topic = sys.argv[3],
-                  event = {'name': request.form['name'],
-                           'age': request.form['age']})
-      return "Push succeeded"
-   except Exception, e:
-      return "Push failed: %s" % e
+      publication_id = client.publish(TOPIC_URI,
+         name = request.form['name'], age = request.form['age'])
+      return render_template('onsubmit.html', publication_id = publication_id)
+   except Exception as e:
+      return "Publication failed: {}".format(e)
+
 
 
 if __name__ == "__main__":
-
-   if len(sys.argv) < 4:
-      print """
-Usage:   python __init__.py <WebMQ WebSocket Endpoint> <WebMQ Push Endpoint> <Topic URI>
-Example: python __init__.py wss://autobahn-euwest.tavendo.de http://autobahn-euwest.tavendo.de:8080 http://autobahn.tavendo.de/public/demo/foobar1
-"""
-      sys.exit(1)
-
    app.run(debug = True)
