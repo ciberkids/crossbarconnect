@@ -14,8 +14,8 @@
 
             console.log("connected!");
 
-            function onevent1 (args) {
-               console.log("Got event:", args[0]);
+            function onevent1 (args, kwargs) {
+               console.log("Got event:", args, kwargs);
             }
 
             session.subscribe('com.myapp.topic1', onevent1);

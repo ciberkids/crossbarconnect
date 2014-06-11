@@ -26,7 +26,15 @@ if __name__ == '__main__':
    ##
    client = crossbarconnect.Client("http://127.0.0.1:8080/push")
 
-   ## publish 5 events with structured payload
+   ## publish an event without payload
+   ##
+   client.publish(u"com.myapp.topic1")
+
+   ## publish an event with (positional) payload
+   ##
+   client.publish(u"com.myapp.topic1", u"Hello, world!", 23)
+
+   ## publish 5 events with complex payload
    ##
    for i in range(5):
-      client.push(topic = "com.myapp.topic1", event = {'seq': i, 'msg': "Hello, world!"})
+      client.publish(u"com.myapp.topic1", i, sq = i * i, msg = u"Hello, world!")

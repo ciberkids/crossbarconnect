@@ -19,6 +19,7 @@
 
 import json, datetime, hmac, hashlib, base64
 
+import six
 from six.moves.urllib import parse
 from six.moves.http_client import HTTPConnection
 
@@ -64,33 +65,48 @@ class Client:
                                            timeout = timeout)
 
 
-   def push(self, topic, event, eligible = None, exclude = None):
+   def publish(self, topic, *args, **kwargs):
       """
-      Push event to subscribers on specified topic via Crossbar.io.
+      Publish an event to subscribers on specified topic via Crossbar.io HTTP bridge.
 
-      The event can be of any simple type or complex object that can
-      be serialized to JSON.
+      The event payload (positional and keyword) can be of any type that can be
+      serialized to JSON.
 
-      :param topic: Topic to push to. Must be a valid URI from the HTTP scheme.
+      If `kwargs` contains an `options` attribute, this is expected to
+      be a dictionary with the following possible parameters:
+
+       * `exclude`: A list of WAMP session IDs to exclude from receivers.
+       * `eligible`: A list of WAMP session IDs eligible as receivers.
+
+      :param topic: Topic to push to.
       :type topic: str
-      :param event: Event to push. Must be JSON-serializable.
-      :type event: obj
-      :param eligible: Optional list of WAMP session IDs eligible to receive this event.
-      :type eligible: list of strings
-      :param exclude: Optional list of WAMP session IDs to exclude from receivers.
-      :type exclude: list of strings
+      :param args: Arbitrary application payload for the event (positional arguments).
+      :type args: list
+      :param kwargs: Arbitrary application payload for the event (keyword arguments).
+      :type kwargs: dict
       """
+      assert(type(topic) == six.text_type)
+      event = {
+         'topic': topic
+      }
+
+      if 'options' in kwargs:
+         event['options'] = kwargs.pop('options')
+         assert(type(event['options']) == dict)
+
+      if args:
+         event['args'] = args
+
+      if kwargs:
+         event['kwargs'] = kwargs
+
       try:
          msg = json.dumps(event)
       except Exception as e:
-         raise Exception("invalid event object - not JSON serializable (%s)" % str(e))
+         raise Exception("invalid event payload - not JSON serializable: {0}".format(e))
 
-      params = {'topic': topic}
-      params.update(self._signature(topic, msg))
-      if eligible:
-         params['eligible': ','.join(eligible)]
-      if exclude:
-         params['exclude': ','.join(exclude)]
+      params = {}
+      params.update(self._signature(msg))
       path = "%s?%s" % (parse.quote(self.pushEndpoint['path']), parse.urlencode(params))
 
       self.pushConnection.request('POST', path, msg, self.pushEndpoint['headers'])
@@ -105,12 +121,11 @@ class Client:
       return now.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-   def _signature(self, topic, body):
+   def _signature(self, body):
       if self.authKey:
-         # HMAC[SHA256]_{authSecret}(topic | authKey | timestamp | body) => appsig
+         # HMAC[SHA256]_{authSecret}(authKey | timestamp | body) => appsig
          timestamp = self._utcnow()
          hm = hmac.new(self.authSecret, None, hashlib.sha256)
-         hm.update(topic)
          hm.update(self.authKey)
          hm.update(timestamp)
          hm.update(body)
