@@ -1,6 +1,6 @@
 ###############################################################################
 ##
-##  Copyright 2012 Tavendo GmbH
+##  Copyright (C) 2012-2014 Tavendo GmbH
 ##
 ##  Licensed under the Apache License, Version 2.0 (the "License");
 ##  you may not use this file except in compliance with the License.
@@ -16,25 +16,30 @@
 ##
 ###############################################################################
 
-import json, httplib, urlparse, urllib, datetime, hmac, hashlib, base64
+
+import json, datetime, hmac, hashlib, base64
+
+from six.moves.urllib import parse
+from six.moves.http_client import HTTPConnection
+
 
 
 class Client:
    """
-   Tavendo WebMQ Push client.
+   Crossbar.io push client.
    """
 
    def __init__(self, pushEndpoint, authKey = None, authSecret = None, timeout = 5):
       """
-      Create WebMQ Push client.
+      Create a new Crossbar.io push client.
 
-      The only mandatory argument is the Push service endpoint of the WebMQ
-      appliance to push to.
+      The only mandatory argument is the Push service endpoint of the Crossbar.io
+      instance to push to.
 
       For signed pushes, provide authentication key and secret. If those are not
       given, unsigned pushes are performed.
 
-      :param pushEndpoint: Push service endpoint of WebMQ appliance.
+      :param pushEndpoint: Push service endpoint of Crossbar.io.
       :type pushEndpoint: str
       :param authKey: Optional authentication key to use.
       :type authKey: str
@@ -50,18 +55,18 @@ class Client:
       self.authSecret = authSecret
       self.pushEndpoint = self._parsePushUrl(pushEndpoint)
       self.pushEndpoint['headers'] = {"Content-type": "application/x-www-form-urlencoded",
-                                      "User-agent": "WebMQConnectPython"}
+                                      "User-agent": "crossbarconnect-python"}
 
       if self.pushEndpoint['secure']:
          raise Exception("Push via HTTPS not implemented")
-      self.pushConnection = httplib.HTTPConnection(self.pushEndpoint['host'],
-                                                   self.pushEndpoint['port'],
-                                                   timeout = timeout)
+      self.pushConnection = HTTPConnection(self.pushEndpoint['host'],
+                                           self.pushEndpoint['port'],
+                                           timeout = timeout)
 
 
    def push(self, topic, event, eligible = None, exclude = None):
       """
-      Push event to subscribers on specified topic via Tavendo WebMQ.
+      Push event to subscribers on specified topic via Crossbar.io.
 
       The event can be of any simple type or complex object that can
       be serialized to JSON.
@@ -77,16 +82,16 @@ class Client:
       """
       try:
          msg = json.dumps(event)
-      except Exception, e:
+      except Exception as e:
          raise Exception("invalid event object - not JSON serializable (%s)" % str(e))
 
-      params = {'topicuri': topic}
+      params = {'topic': topic}
       params.update(self._signature(topic, msg))
       if eligible:
          params['eligible': ','.join(eligible)]
       if exclude:
          params['exclude': ','.join(exclude)]
-      path = "%s?%s" % (urllib.quote(self.pushEndpoint['path']), urllib.urlencode(params))
+      path = "%s?%s" % (parse.quote(self.pushEndpoint['path']), parse.urlencode(params))
 
       self.pushConnection.request('POST', path, msg, self.pushEndpoint['headers'])
       response = self.pushConnection.getresponse()
@@ -102,7 +107,7 @@ class Client:
 
    def _signature(self, topic, body):
       if self.authKey:
-         # HMAC[SHA256]_{authSecret}(topicuri | authKey | timestamp | body) => appsig
+         # HMAC[SHA256]_{authSecret}(topic | authKey | timestamp | body) => appsig
          timestamp = self._utcnow()
          hm = hmac.new(self.authSecret, None, hashlib.sha256)
          hm.update(topic)
@@ -118,7 +123,7 @@ class Client:
 
 
    def _parsePushUrl(self, url):
-      parsed = urlparse.urlparse(url)
+      parsed = parse.urlparse(url)
       if parsed.scheme not in ["http", "https"]:
          raise Exception("invalid Push URL scheme '%s'" % parsed.scheme)
       if parsed.port is None or parsed.port == "":
@@ -136,7 +141,7 @@ class Client:
          raise Exception("invalid Push URL: non-empty query string '%s" % parsed.query)
       if parsed.path is not None and parsed.path != "":
          ppath = parsed.path
-         path = urllib.unquote(ppath)
+         path = parse.unquote(ppath)
       else:
          ppath = "/"
          path = ppath

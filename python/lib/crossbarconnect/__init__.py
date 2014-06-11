@@ -1,6 +1,6 @@
 ###############################################################################
 ##
-##  Copyright 2012 Tavendo GmbH
+##  Copyright (C) 2012-2014 Tavendo GmbH
 ##
 ##  Licensed under the Apache License, Version 2.0 (the "License");
 ##  you may not use this file except in compliance with the License.
@@ -16,17 +16,22 @@
 ##
 ###############################################################################
 
-import sys
-import webmqconnect
+from __future__ import absolute_import
 
-if __name__ == '__main__':
+__doc__ = """
+Crossbar.io Connector for Python.
 
-   if len(sys.argv) < 4:
-      print """
-Usage:   python push.py <WebMQ Push Endpoint> <Topic URI> <Message>
-Example: python push.py http://autobahn-euwest.tavendo.de:8080 http://autobahn.tavendo.de/public/demo/pubsub/577274 "Hello from Python"
+For more information, please visit:
+
+ * Documentation: https://github.com/crossbario/crossbar/wiki
+ * Homepage: http://crossbar.io/
+ * Source code: https://github.com/crossbario/crossbarconnect
+
+Open-source licensed under the Apache 2.0 license.
+
+Created by Tavendo GmbH. Get in contact at http://tavendo.com
 """
-      sys.exit(1)
 
-   client = webmqconnect.Client(sys.argv[1])
-   client.push(topic = sys.argv[2], event = sys.argv[3])
+__version__ = "0.5.0"
+
+from crossbarconnect.client import Client

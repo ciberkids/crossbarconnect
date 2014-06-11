@@ -1,6 +1,6 @@
 ###############################################################################
 ##
-##  Copyright 2012 Tavendo GmbH
+##  Copyright (C) 2012-2014 Tavendo GmbH
 ##
 ##  Licensed under the Apache License, Version 2.0 (the "License");
 ##  you may not use this file except in compliance with the License.
@@ -16,11 +16,17 @@
 ##
 ###############################################################################
 
-try:
-   import pkg_resources
-   version = pkg_resources.require("webmqconnect")[0].version
-except:
-   ## i.e. no setuptools or no package installed ..
-   version = "?.?.?"
 
-from client import Client
+import crossbarconnect
+
+
+if __name__ == '__main__':
+
+   ## create a new Crossbar.io push client (once)
+   ##
+   client = crossbarconnect.Client("http://127.0.0.1:8080/push")
+
+   ## publish 5 events with structured payload
+   ##
+   for i in range(5):
+      client.push(topic = "com.myapp.topic1", event = {'seq': i, 'msg': "Hello, world!"})

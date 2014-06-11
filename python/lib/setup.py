@@ -1,6 +1,6 @@
 ###############################################################################
 ##
-##  Copyright 2012 Tavendo GmbH
+##  Copyright (C) 2012-2014 Tavendo GmbH
 ##
 ##  Licensed under the Apache License, Version 2.0 (the "License");
 ##  you may not use this file except in compliance with the License.
@@ -18,37 +18,43 @@
 
 from setuptools import setup
 
-LONGDESC = """
-Tavendo WebMQ Web Message Broker extends existing Web applications to the
-Real-time Web.
 
-This module provides the connector to integrate Python-based Web applications
-written for popular frameworks like Django, Flask and others with Tavendo WebMQ.
+## Get package version and docstring from package __init__.py
+##
+import re
+PACKAGE_FILE = "crossbarconnect/__init__.py"
+initfile = open(PACKAGE_FILE, "rt").read()
 
-Using this connector, you can push events from your Web app (or a plain Python
-script) to Tavendo WebMQ which will then forward the event to all real-time
-clients connected and subscribed to the topic you push to.
+VSRE = r"^__version__ = ['\"]([^'\"]*)['\"]"
+mo = re.search(VSRE, initfile, re.M)
+if mo:
+   verstr = mo.group(1)
+else:
+   raise RuntimeError("Unable to find version string in {}.".format(PACKAGE_FILE))
 
-For more information, please visit
+DSRE = r"__doc__ = \"\"\"(.*)\"\"\""
+mo = re.search(DSRE, initfile, re.DOTALL)
+if mo:
+   docstr = mo.group(1)
+else:
+   raise RuntimeError("Unable to find doc string in {}.".format(PACKAGE_FILE))
 
-   * http://www.tavendo.de/webmq
-   * https://github.com/tavendo/WebMQConnectPython
-"""
 
 setup(
-   name = 'webmqconnect',
-   version = '0.4.1',
-   description = 'Tavendo WebMQ Connect for Python',
-   long_description = LONGDESC,
+   name = 'crossbarconnect',
+   version = verstr,
+   description = 'Crossbar.io Connector for Python',
+   long_description = docstr,
    license = 'Apache License 2.0',
    author = 'Tavendo GmbH',
-   author_email = 'webmq@googlegroups.com',
-   url = 'http://www.tavendo.de/webmq',
+   author_email = 'autobahnws@googlegroups.com',
+   url = 'http://crossbar.io',
    platforms = ('Any'),
-   install_requires = ['setuptools'],
-   packages = ['webmqconnect'],
-   package_data = {'': ['LICENSE']},
-   zip_safe = False,
+   install_requires = ['setuptools', 'six'],
+   packages = ['crossbarconnect'],
+   include_package_data = True,
+   data_files = [('.', ['LICENSE'])],
+   zip_safe = True,
    classifiers = ["License :: OSI Approved :: Apache Software License",
                   "Development Status :: 4 - Beta",
                   "Environment :: Console",
@@ -57,5 +63,5 @@ setup(
                   "Programming Language :: Python",
                   "Topic :: Internet :: WWW/HTTP",
                   "Topic :: Software Development :: Libraries"],
-   keywords = 'webmq websocket realtime push rest'
+   keywords = 'crossbar router autobahn websocket realtime rfc6455 wamp rpc pubsub push rest http'
 )
