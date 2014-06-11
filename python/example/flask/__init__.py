@@ -20,6 +20,8 @@ import sys
 import crossbarconnect
 from flask import Flask, request, render_template
 
+## some configuration
+##
 PUSH_URL = "http://127.0.0.1:8080/push"
 TOPIC_URI = "com.myapp.topic1"
 WAMP_URL = "ws://127.0.0.1:8080/ws"
@@ -34,7 +36,9 @@ def index():
    Render demo main page.
    """
    return render_template('index.html',
+      ## prefill the form with these values
       name = "Heinzelmann", age = 23,
+      ## config for subscribing to events
       router = WAMP_URL, realm = WAMP_REALM, topic = TOPIC_URI)
 
 
@@ -44,9 +48,11 @@ def form1_submit():
    Extract data from a submitted HTML form, publish event via
    Crossbar.io HTTP Pusher service and render success page.
    """
-   client = crossbarconnect.Client(PUSH_URL)
    try:
-      publication_id = client.publish(TOPIC_URI,
+      ## here we publish the form data via Crossbar.io HTTP Pusher service
+      ## as a WAMP event to all subscribers on TOPIC_URI
+      ##
+      publication_id = app.pusher.publish(TOPIC_URI,
          name = request.form['name'], age = request.form['age'])
       return render_template('onsubmit.html', publication_id = publication_id)
    except Exception as e:
@@ -55,4 +61,9 @@ def form1_submit():
 
 
 if __name__ == "__main__":
+
+   ## we create a client for pushing event via Crossbar.io
+   app.pusher = crossbarconnect.Client(PUSH_URL)
+
+   ## now run our Flask app
    app.run(debug = True)

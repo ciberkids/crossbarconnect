@@ -1,43 +1,19 @@
-Using WebMQ Connect for Python with Flask
-=========================================
+## Running
 
-This example shows how you can use **WebMQ Connect for Python** from dynamic
-web applications based on the [Flask](http://flask.pocoo.org).
+Create and start a new Crossbar node with a HTTP Pusher service:
 
-Running
--------
+```shell
+cd $HOME
+mkdir test1
+cd test1
+crossbar init --template pusher
+crossbar start
+```
 
-Start the web application by
+Start the Flask application:
 
-	cd examples/flask
-	python __init__.py <WebMQ WebSocket Endpoint> <WebMQ Push Endpoint> <Topic URI>
+```shell
+python __init__.py
+```
 
-where
-
-	<WebMQ WebSocket Endpoint> : WebSocket Service Endpoint of your WebMQ appliance
-	<WebMQ Push Endpoint>      : Push Service Endpoint of your WebMQ appliance
-	<Topic URI>                : Topic URI you want to use
-
-
-For example
-
-	python __init__.py wss://autobahn-euwest.tavendo.de http://autobahn-euwest.tavendo.de:8080 http://autobahn.tavendo.de/public/demo/foobar1
-
-
-Now open
-
-	http://localhost:5000
-
-in your browser, and continue opening the WebSocket client in one browser window and the HTML form in another.
-
-Submit form data and see how data is received in real-time in the WebSocket client window.
-
-
-How it works
-------------
-
-When the HTML form is submitted, we receive the submitted data in Flask. At this point we create a **WebMQ Connect** client and push the data to WebMQ.
-
-Tavendo WebMQ will dispatch the received data to all clients subscribed to the topic specified in the push.
-
-The WebSocket client uses **AutobahnJS** to open a WAMP session to Tavendo WebMQ, subscribes to interesting topics, and receives data.
+Open [http://localhost:5000] in two browser tabs, submit form data in the first tab and watch submitted information immediately appear in the second tab.
