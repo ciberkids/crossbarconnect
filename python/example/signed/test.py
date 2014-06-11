@@ -22,20 +22,14 @@ import crossbarconnect
 
 if __name__ == '__main__':
 
-   ## create a new Crossbar.io push client (once)
+   ## create a new Crossbar.io push client (once), providing key/secret
+   ## for signed requests
    ##
-   client = crossbarconnect.Client("http://127.0.0.1:8080/push")
+   client = crossbarconnect.Client("http://127.0.0.1:8080/push",
+      key = "foobar", secret = "secret")
 
    ## publish an event without payload
    ##
-   client.publish("com.myapp.topic1")
-
-   ## publish an event with (positional) payload
-   ##
    event_id = client.publish("com.myapp.topic1", "Hello, world!", 23)
-   print("event published with ID {0}".format(event_id))
 
-   ## publish 5 events with complex payload
-   ##
-   for i in range(5):
-      client.publish("com.myapp.topic1", i, sq = i * i, msg = "Hello, world!")
+   print("event published with ID {0}".format(event_id))
