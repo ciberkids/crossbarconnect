@@ -18,6 +18,11 @@
 
 __all__ = ['Client']
 
+try:
+   import ssl
+   _HAS_SSL = True
+except ImportError:
+   _HAS_SSL = False
 
 import json
 import hmac
@@ -28,7 +33,7 @@ from datetime import datetime
 
 import six
 from six.moves.urllib import parse
-from six.moves.http_client import HTTPConnection
+from six.moves.http_client import HTTPConnection, HTTPSConnection
 
 
 
@@ -81,7 +86,7 @@ class Client:
    Crossbar.io HTTP bridge client.
    """
 
-   def __init__(self, url, key = None, secret = None, timeout = 5):
+   def __init__(self, url, key = None, secret = None, timeout = 5, context = None):
       """
       Create a new Crossbar.io push client.
 
@@ -99,6 +104,11 @@ class Client:
       :type secret: str
       :param timeout: Timeout for requests.
       :type timeout: int
+      :param context: If the HTTP bridge is running on HTTPS (that is securely over TLS),
+         then the context provides the SSL settings the client should use (e.g. the
+         certificate chain against which to verify the server certificate).
+         See: https://docs.python.org/2/library/ssl.html#ssl.SSLContext
+      :type context: obj or None
       """
       if six.PY2:
          if type(url) == str:
@@ -125,10 +135,14 @@ class Client:
       }
 
       if self._endpoint['secure']:
-         raise Exception("HTTPS not implemented")
+         if not _HAS_SSL:
+            raise Exception("Bridge URL is using HTTPS, but Python SSL module is missing")
+         self._connection = HTTPSConnection(self._endpoint['host'],
+               self._endpoint['port'], timeout = timeout, context = context)
+      else:
+         self._connection = HTTPConnection(self._endpoint['host'],
+               self._endpoint['port'], timeout = timeout)
 
-      self._connection = HTTPConnection(self._endpoint['host'],
-         self._endpoint['port'], timeout = timeout)
 
 
 
