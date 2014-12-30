@@ -32,6 +32,6 @@ Open-source licensed under the Apache 2.0 license.
 Created by Tavendo GmbH. Get in contact at http://tavendo.com
 """
 
-__version__ = "0.5.2"
+__version__ = "0.5.3"
 
 from crossbarconnect.client import Client

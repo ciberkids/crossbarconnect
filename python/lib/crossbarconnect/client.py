@@ -24,6 +24,10 @@ try:
 except ImportError:
    _HAS_SSL = False
 
+import sys
+
+_HAS_SSL_CLIENT_CONTEXT = sys.version_info >= (2,7,9)
+
 import json
 import hmac
 import hashlib
@@ -106,8 +110,9 @@ class Client:
       :type timeout: int
       :param context: If the HTTP bridge is running on HTTPS (that is securely over TLS),
          then the context provides the SSL settings the client should use (e.g. the
-         certificate chain against which to verify the server certificate).
-         See: https://docs.python.org/2/library/ssl.html#ssl.SSLContext
+         certificate chain against which to verify the server certificate). This parameter
+         is only available on Python 2.7.9+ and Python 3 (otherwise the parameter is silently
+         ignored!). See: https://docs.python.org/2/library/ssl.html#ssl.SSLContext
       :type context: obj or None
       """
       if six.PY2:
@@ -123,6 +128,8 @@ class Client:
       assert(key is None or type(key) == six.text_type)
       assert(secret is None or type(secret) == six.text_type)
       assert(type(timeout) == int)
+      if _HAS_SSL and _HAS_SSL_CLIENT_CONTEXT:
+         assert(context is None or isinstance(context, ssl.SSLContext))
 
       self._seq = 1
       self._key = key
@@ -137,8 +144,12 @@ class Client:
       if self._endpoint['secure']:
          if not _HAS_SSL:
             raise Exception("Bridge URL is using HTTPS, but Python SSL module is missing")
-         self._connection = HTTPSConnection(self._endpoint['host'],
-               self._endpoint['port'], timeout = timeout, context = context)
+         if _HAS_SSL_CLIENT_CONTEXT:
+            self._connection = HTTPSConnection(self._endpoint['host'],
+                  self._endpoint['port'], timeout = timeout, context = context)
+         else:
+            self._connection = HTTPSConnection(self._endpoint['host'],
+                  self._endpoint['port'], timeout = timeout)
       else:
          self._connection = HTTPConnection(self._endpoint['host'],
                self._endpoint['port'], timeout = timeout)
