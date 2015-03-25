@@ -146,11 +146,7 @@ curl_close($ch);
 
 
 
-//Building answer for gui
-//header('Content-Type: application/json');
-//http_response_code($result['http_code']);
-//answering
-
+//ref for crossbar.io config
 
 /**
 {
