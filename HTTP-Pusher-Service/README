@@ -1,0 +1,39 @@
+==== DESCRIPTION ====
+In these file there are 2 stand alone examples, these permit to publish on a topic subscribed by clients (e.g. authobahn.js) via 
+an http post with secret enabled
+
+http://crossbar.io/docs/HTTP-Pusher-Service/
+http://crossbar.io/docs/Application-Scenarios/#adding-real-time-to-web-applications
+
+The 2 examples are written in python and php.
+
+
+I included the crossbar configuration.
+
+
+== TEST  ==
+
+1) install a your own copy of Crossbar.io
+
+2) write a client that subscribe the topic inseide the examples.
+
+3) launch the crossbar server 
+
+crossbar start
+
+4) and then in another shell launch
+
+python file.py
+
+or
+
+php file.php
+
+the code is very raw but is useful in order to understand how the crossbar.io server wants the data and the format.
+
+I hope to be useful to some one.
+
+Bye
+
+
+

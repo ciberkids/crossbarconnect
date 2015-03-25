@@ -1,0 +1,17 @@
+{
+   "pid": 13143,
+   "argv": [
+      "/usr/bin/crossbar",
+      "start",
+      "--loglevel=trace"
+   ],
+   "options": {
+      "loglevel": "trace",
+      "logdir": null,
+      "config": "/var/www/KM3WebServer/.crossbar/config.json",
+      "cbdir": "/var/www/KM3WebServer/.crossbar",
+      "command": "start",
+      "reactor": null,
+      "debug": false
+   }
+}
